@@ -87,6 +87,11 @@ Helpers =
       opts.blackList = []
       console.log 'BLACKLIST:', opts.blackList
 
+    if message.match(/^protect \w*/i)
+      target = message.substring(8)
+      opts.whiteList.push(target)
+      console.log 'WHITELIST:', opts.blackList
+
 
 # -----------------------------------------------------------------
 # EVENTS
