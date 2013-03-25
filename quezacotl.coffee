@@ -66,31 +66,35 @@ Helpers =
       @.kickUser(sacrifice, speech.kicks.victim, 2000)
 
   modes : (nick, to, message) ->
-    if message.match(/^set eyeforeye$/i)
+    if message.match(/^q:doublekill/i)
       client.say to, "#{nick} #{speech.settings.setefe}"
       flags.eyeForEye = true
-      console.log 'SET: eyeForEye'
+      console.log 'SET: double kill mode'
 
-    if message.match(/^unset eyeforeye$/i)
+    if message.match(/^q:singlekill/i)
       client.say to, "#{nick} #{speech.settings.unsetefe}"
       flags.eyeForEye = false
-      console.log 'UNSET: eyeForEye'
+      console.log 'SET: single kill mode'
 
-    if message.match(/timeout \w*/i)
-      target = message.substring(8)
+    if message.match(/q:punish \w*/i)
+      target = message.substring(9)
       client.say to, "#{target} #{speech.settings.setblacklist}"
       opts.blackList.push(target)
       console.log 'BLACKLIST:', opts.blackList
 
-    if message.match(/^clear$/i)
+    if message.match(/^q:reset/i)
       client.say to, "#{nick} #{speech.settings.clear}"
       opts.blackList = []
+      opts.whiteList = ['quezacotl', 'hswe']
       console.log 'BLACKLIST:', opts.blackList
 
-    if message.match(/^protect \w*/i)
-      target = message.substring(8)
+    if message.match(/^q:protect \w*/i)
+      target = message.substring(10)
       opts.whiteList.push(target)
-      console.log 'WHITELIST:', opts.blackList
+      console.log 'WHITELIST:', opts.whiteList
+
+    if message.match(/^q:options/)
+      client.say to, "#{nick}: q:doublekill, q:singlekill, q:punish, q:reset, q:protect"
 
 
 # -----------------------------------------------------------------
