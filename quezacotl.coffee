@@ -10,6 +10,7 @@ opts =
   botName: 'quezacotl'
   whiteList : ['quezacotl', 'hswe']
   blackList: []
+  admins: ['hswe']
 
 flags =
   eyeForEye: false
@@ -66,6 +67,13 @@ Helpers =
       @.kickUser(sacrifice, speech.kicks.victim, 2000)
 
   modes : (nick, to, message) ->
+
+    if nick is 'hswe' and message.match(/^q:admin \w*/i)
+      admin = message.substring(8)
+      client.say to, "I'll listen to #{admin}"
+      opts.admins.push(admin)
+      console.log 'ADMINS:', opts.admins
+
     if message.match(/^q:doublekill/i)
       client.say to, "#{nick} #{speech.settings.setefe}"
       flags.eyeForEye = true
@@ -83,10 +91,9 @@ Helpers =
       console.log 'BLACKLIST:', opts.blackList
 
     if message.match(/^q:reset/i)
-      client.say to, "#{nick} #{speech.settings.clear}"
       opts.blackList = []
       opts.whiteList = ['quezacotl', 'hswe']
-      console.log 'BLACKLIST:', opts.blackList
+      opts.admins = ['hswe']
 
     if message.match(/^q:protect \w*/i)
       target = message.substring(10)
@@ -94,7 +101,8 @@ Helpers =
       console.log 'WHITELIST:', opts.whiteList
 
     if message.match(/^q:options/)
-      client.say to, "#{nick}: q:doublekill, q:singlekill, q:punish, q:reset, q:protect"
+      client.say to, "admins: q:doublekill, q:singlekill, q:punish, q:reset, q:protect"
+      client.say to, "hswe: q:admin"
 
 
 # -----------------------------------------------------------------
@@ -107,12 +115,14 @@ client.addListener 'error', (message) ->
 
 client.addListener 'message', (nick, to, message) ->
 
-  if nick is 'hswe'
+  admins = opts.admins.join('|')
+  whitelist = opts.whiteList.join('|')
+  blacklist = opts.blackList.join('|')
+
+  if nick.match(admins)
     Helpers.modes(nick, to, message)
 
   if message.match /sacrifice \w/i
-    whitelist = opts.whiteList.join('|')
-    blacklist = opts.blackList.join('|')
 
     # super greasy, super nice
     sacrifice = message.substring(9)
